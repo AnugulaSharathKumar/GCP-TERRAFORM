@@ -1,4 +1,4 @@
-project_id   = "my-gcp-project-id"
+project_id   = "project-03af6885-4354-4ef7-96a"
 
 vpc_name     = "dev-vpc"
 subnet_name  = "dev-subnet"
