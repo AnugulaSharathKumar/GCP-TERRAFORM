@@ -1,9 +1,9 @@
-project_id   = "project-03af6885-4354-4ef7-96a"
+project_id   = "my-learning-terraform-482905"
 
-vpc_name     = "dev-vpc"
-subnet_name  = "dev-subnet"
+vpc_name     = "test-vpc"
+subnet_name  = "test-subnet"
 subnet_cidr  = "10.0.0.0/24"
 
-vm_name      = "dev-vm"
-machine_type = "e2-medium"
+vm_name      = "test-vm"
+machine_type = "e2-micro"
 
