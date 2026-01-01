@@ -22,7 +22,19 @@
 8. Create Application Default Credentials (VERY IMPORTANT)
     gcloud auth application-default login
      
-9. Initialing the terraform   
+9. Created the storage.tf file and added the deatils bucket name, location, other deatils
+
+10. Terraform init
+    terraform validate
+    terraform plan -input=false -out=tffile
+    terraform apply tffile
+
+11. Once storage bucket is created un commiting the storage.tf file and output.tf and terraform.tfvars bucket related things need to commit with # and 
+
+uncomit the backend.tf file
+Statefiles will store in buckets
+
+Initialing the terraform   
     terraform init
 10. Validating the Terraform file
     terraform validate
