@@ -51,4 +51,19 @@ variable "machine_type" {
   description = "VM machine type"
   type        = string
 }
+variable "bucket_name" {
+  description = "Unique GCS bucket name"
+  type        = string
+}
 
+variable "bucket_location" {
+  description = "Bucket location"
+  type        = string
+  default     = "US"
+}
+
+variable "storage_class" {
+  description = "Storage class"
+  type        = string
+  default     = "STANDARD"
+}
