@@ -9,33 +9,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repo
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # ✅ Authenticate to GCP (OFFICIAL WAY)
+      # 2️⃣ Authenticate to GCP
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-      # ✅ Install gcloud
+      # 3️⃣ Setup gcloud CLI
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
 
-      # Setup Terraform
+      # 4️⃣ Setup Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: "1.5.6"
 
+      # 5️⃣ Terraform Init
       - name: Terraform Init
         run: terraform init
 
+      # 6️⃣ Terraform Format Check
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      # 7️⃣ Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+
+      # 8️⃣ Terraform Plan
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
+      # 9️⃣ Terraform Apply (only on main branch push)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve tfplan
