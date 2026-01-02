@@ -1,0 +1,57 @@
+name: "Terraform CI/CD for GCP"
+
+# Triggers:
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Terraform CLI
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "1.5.6"
+
+      # 3️⃣ Authenticate GCP (Service Account)
+      - name: Authenticate to Google Cloud
+        env:
+          GOOGLE_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        run: |
+          echo "$GOOGLE_CREDENTIALS" > gcp-key.json
+          gcloud auth activate-service-account --key-file=gcp-key.json
+          gcloud config set project $GOOGLE_PROJECT_ID
+
+      # 4️⃣ Terraform Init
+      - name: Terraform Init
+        run: terraform init
+
+      # 5️⃣ Terraform Format Check
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      # 6️⃣ Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+
+      # 7️⃣ Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      # 8️⃣ Optional Apply (only on main branch)
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve tfplan
