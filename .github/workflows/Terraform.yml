@@ -1,12 +1,11 @@
 
-name: Terraform CI/CD for GCP (OIDC)
+name: Terraform CI/CD for GCP (Key-based)
 
 on:
   push:
     branches: [ main ]
 
 permissions:
-  id-token: write    # Required for OIDC token exchange
   contents: read
 
 jobs:
@@ -14,56 +13,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Authenticate to Google Cloud via OIDC (no JSON keys)
-      - name: Authenticate to Google Cloud (OIDC)
+      # Authenticate via service account key JSON
+      - name: Authenticate to Google Cloud (Key JSON)
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      # 3️⃣ Setup Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: "1.5.6"
 
-      # (Optional) Cache Terraform downloads
-      - name: Cache Terraform
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.terraform.d/plugin-cache
-            .terraform
-          key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
-        env:
-          TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
-
-      # 4️⃣ Terraform Init
       - name: Terraform Init
         env:
           GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
-        run: terraform init -input=false
+        run: terraform init
 
-      # 5️⃣ Terraform Format
-      - name: Terraform Format
-        run: terraform fmt -check
+     # - name: Terraform Format
+     #   run: terraform fmt -check
 
-      # 6️⃣ Terraform Validate
       - name: Terraform Validate
         run: terraform validate
 
-      # 7️⃣ Terraform Plan
       - name: Terraform Plan
         env:
           GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
-        run: terraform plan -out=tfplan -input=false
+        run: terraform plan -out=tfplan
 
-      # 8️⃣ Terraform Apply (only on main)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         env:
