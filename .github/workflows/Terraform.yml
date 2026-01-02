@@ -1,32 +1,36 @@
-name: Terraform CI/CD for GCP
+name: "Terraform CI/CD for GCP"
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
-
+  
     steps:
-      # 1️⃣ Checkout repo
-      - name: Checkout code
+      # 1️⃣ Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Authenticate to GCP
+      # 2️⃣ Authenticate to GCP (official method)
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
       # 3️⃣ Setup gcloud CLI
-      - name: Setup gcloud
+      - name: Setup gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          export_default_credentials: true
+          version: latest
 
-      # 4️⃣ Setup Terraform CLI
+      # 4️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -48,7 +52,9 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      # 9️⃣ Terraform Apply (only on main branch push)
+      # 9️⃣ Terraform Apply (manual approval required)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
+        environment:
+          name: production   # must match the environment name above for approval
         run: terraform apply -auto-approve tfplan
