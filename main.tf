@@ -38,7 +38,7 @@ module "vm" {
   machine_type = var.machine_type
   zone          = var.zone
 
-  # Subnet ID received from VPC module output
+  ## Subnet ID received from VPC module output
   subnet_id = module.vpc.subnet_id
 }
 
