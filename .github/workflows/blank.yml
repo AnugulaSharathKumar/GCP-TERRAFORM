@@ -33,17 +33,17 @@ jobs:
       - name: Run a multi-line script
        # run: |
        #   echo Add other actions to build,
-          echo test, and deploy your project.
-          echo "Adding the excute permissions"
-          sudo chmod +x Installing_gcpsdk.sh terraform_installation.sh
-          sudo ./terraform_installation.sh
-          sudo ./Installing_gcpsdk.sh
-          gcloud config set project my-learning-terraform-482905
-          gcloud config list
-          gcloud services enable compute.googleapis.com
-          gcloud auth application-default login
+       #   echo test, and deploy your project.
+       #   echo "Adding the excute permissions"
+        #  sudo chmod +x Installing_gcpsdk.sh terraform_installation.sh
+         # sudo ./terraform_installation.sh
+         # sudo ./Installing_gcpsdk.sh
+         # gcloud config set project my-learning-terraform-482905
+          #gcloud config list
+          #gcloud services enable compute.googleapis.com
+          #gcloud auth application-default login
        # run: 
-          terraform init
-          terraform validate
-          terraform plan -input=false -out=tffile
-          terraform apply tffile
+          #terraform init
+          #terraform validate
+          #terraform plan -input=false -out=tffile
+          #terraform apply tffile
