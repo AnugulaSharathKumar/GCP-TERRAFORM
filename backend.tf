@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket  = "sharath-terraform-gcs-bucket-001"
+    bucket  = "sharath-terraform-bucket-1"
     prefix  = "/my-learning-terraform-482905/Statefile/terraform-state"
   }
 }
